@@ -1,0 +1,53 @@
+# Python bytecode
+
+**pycache**/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+
+venv/
+env/
+.venv/
+
+# Environment variables
+
+.env
+
+# Uploaded files
+
+uploads/
+
+# Vector index files (will be generated later)
+
+*.index
+*.faiss
+*.bin
+*.pkl
+
+# Python build files
+
+build/
+dist/
+*.egg-info/
+
+# Logs
+
+*.log
+
+# Jupyter notebooks checkpoints
+
+.ipynb_checkpoints/
+
+# VSCode
+
+.vscode/
+
+# Mac files
+
+.DS_Store
+
+# Windows files
+
+Thumbs.db
