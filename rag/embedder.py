@@ -12,3 +12,7 @@ def embed_chunks(chunks):
         chunk["embedding"] = embeddings[i]
 
     return chunks
+
+
+def embed_query(query: str):
+    return model.encode([query])[0]

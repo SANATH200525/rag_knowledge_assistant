@@ -51,3 +51,8 @@ dist/
 # Windows files
 
 Thumbs.db
+
+# files i dont want others to know i have used
+
+DESIGN.md
+groq_test.py

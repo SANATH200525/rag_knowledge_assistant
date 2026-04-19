@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ReaDoc - Document Analysis</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#131313",
+                        "primary": "#abc7ff",
+                        "on-surface-variant": "#c1c6d6",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#2e4772",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-container-highest": "#353535",
+                        "error-container": "#93000a",
+                        "on-background": "#e2e2e2",
+                        "surface-dim": "#131313",
+                        "surface-bright": "#393939",
+                        "secondary-fixed": "#d7e2ff",
+                        "tertiary-container": "#c25100",
+                        "on-tertiary-fixed": "#341000",
+                        "tertiary-fixed": "#ffdbcb",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-fixed-dim": "#abc7ff",
+                        "primary-fixed": "#d7e2ff",
+                        "on-tertiary-fixed-variant": "#7a3000",
+                        "on-primary-container": "#fcfbff",
+                        "surface-container-low": "#1b1b1b",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#303030",
+                        "surface-tint": "#abc7ff",
+                        "primary-container": "#0071e3",
+                        "outline-variant": "#414753",
+                        "on-primary-fixed": "#001b3f",
+                        "secondary-fixed-dim": "#aec7f9",
+                        "secondary-container": "#2e4772",
+                        "on-tertiary": "#562000",
+                        "secondary": "#aec7f9",
+                        "on-primary-fixed-variant": "#00458f",
+                        "on-tertiary-container": "#fffaf9",
+                        "on-secondary-container": "#9db5e7",
+                        "surface-container-high": "#2a2a2a",
+                        "inverse-primary": "#005cbb",
+                        "tertiary": "#ffb693",
+                        "tertiary-fixed-dim": "#ffb693",
+                        "on-primary": "#002f66",
+                        "error": "#ffb4ab",
+                        "outline": "#8b919f",
+                        "surface-variant": "#353535",
+                        "surface-container": "#1f1f1f",
+                        "on-secondary": "#14305a",
+                        "on-surface": "#e2e2e2",
+                        "on-secondary-fixed": "#001b3f",
+                        "background": "#131313"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #abc7ff 0%, #0071e3 100%);
+        }
+    </style>
+    <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('theme-icon');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.textContent = 'light_mode';
+            } else {
+                icon.textContent = 'dark_mode';
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="bg-[#f5f5f7] dark:bg-black text-[#1d1d1f] dark:text-white min-h-screen flex flex-col antialiased selection:bg-primary-container selection:text-on-primary-container transition-colors duration-300">
+    <header
+        class="sticky top-0 w-full z-50 bg-white/80 dark:bg-black/80 backdrop-blur-2xl shadow-[0_20px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.4)] border-b border-gray-200 dark:border-white/10 transition-colors duration-300">
+        <div class="flex items-center justify-between px-8 h-20 max-w-screen-2xl mx-auto">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-[#0071e3] text-3xl"
+                    style="font-variation-settings: 'FILL' 1;">clinical_notes</span>
+                <h1
+                    class="text-2xl font-black tracking-tighter text-[#1d1d1f] dark:text-zinc-100 transition-colors duration-300">
+                    ReaDoc</h1>
+            </div>
+            <button aria-label="Toggle Theme"
+                class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                onclick="toggleTheme()">
+                <span class="material-symbols-outlined text-[#1d1d1f] dark:text-white transition-colors duration-300"
+                    id="theme-icon">light_mode</span>
+            </button>
+        </div>
+    </header>
+    <main class="flex-grow flex flex-col">
+        <section
+            class="bg-gray-100 dark:bg-surface-container-low py-24 px-6 md:px-12 flex-shrink-0 flex flex-col items-center justify-center transition-colors duration-300">
+            <div class="max-w-3xl w-full mx-auto space-y-12">
+                <div class="flex flex-col md:flex-row items-center gap-6 justify-center">
+                    <input type="file" id="fileInput" class="hidden" accept="application/pdf" onchange="handleFileSelect(event)">
+                    <button
+                        onclick="document.getElementById('fileInput').click()"
+                        class="flex items-center gap-2 bg-[#0071e3] text-white px-6 py-3 rounded-DEFAULT font-semibold tracking-tight hover:opacity-90 transition-opacity shadow-[0_10px_20px_rgba(0,113,227,0.2)]">
+                        <span class="material-symbols-outlined text-xl">upload_file</span>
+                        Upload Document
+                    </button>
+                    <div id="uploadState" style="display: none;"
+                        class="flex items-center gap-3 bg-white/50 dark:bg-surface-variant/50 px-4 py-2.5 rounded-DEFAULT outline outline-1 outline-gray-300 dark:outline-outline-variant/15 backdrop-blur-sm transition-colors duration-300">
+                        <span
+                            class="material-symbols-outlined text-gray-600 dark:text-on-surface-variant text-lg">description</span>
+                        <span id="uploadedFileNameDisplay"
+                            class="text-sm font-medium text-[#1d1d1f] dark:text-on-surface transition-colors duration-300">Uploading...</span>
+                        <button onclick="clearUpload()"
+                            class="text-gray-500 dark:text-on-surface-variant hover:text-red-500 dark:hover:text-error transition-colors ml-2">
+                            <span class="material-symbols-outlined text-lg">close</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="relative group">
+                        <div
+                            class="absolute -inset-0.5 bg-gradient-to-r from-[#0071e3]/30 to-[#abc7ff]/30 rounded-lg blur opacity-0 group-focus-within:opacity-100 transition duration-500">
+                        </div>
+                        <textarea id="queryInput"
+                            class="relative w-full bg-white dark:bg-surface-variant text-[#1d1d1f] dark:text-on-surface placeholder:text-gray-400 dark:placeholder:text-on-surface-variant/50 rounded-lg border-0 ring-1 ring-gray-200 dark:ring-outline-variant/20 focus:ring-2 focus:ring-[#0071e3]/40 p-6 text-lg md:text-xl font-body leading-relaxed resize-none shadow-sm dark:shadow-inner transition-colors duration-300"
+                            placeholder="Ask anything about your document..." rows="3"
+                            onkeydown="handleKeyPress(event)"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="askQuestion()"
+                            class="flex items-center gap-2 bg-[#0071e3] text-white px-8 py-3 rounded-DEFAULT font-semibold tracking-wide hover:bg-[#0071e3]/90 transition-colors shadow-[0_8px_16px_rgba(0,113,227,0.25)]">
+                            Send Query
+                            <span class="material-symbols-outlined text-xl">send</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div
+            class="h-[120px] bg-gradient-to-b from-gray-100 to-[#f5f5f7] dark:from-surface-container-low dark:to-black w-full transition-colors duration-300">
+        </div>
+        <section class="bg-[#f5f5f7] dark:bg-black py-16 px-6 md:px-12 flex-grow transition-colors duration-300">
+            <div class="max-w-4xl w-full mx-auto space-y-16">
+                <div id="results-container" class="space-y-6">
+                    <h2
+                        class="text-sm font-bold tracking-[0.2em] text-gray-500 dark:text-on-surface-variant uppercase flex items-center gap-3 transition-colors duration-300">
+                        <span class="material-symbols-outlined text-[#0071e3]"
+                            style="font-variation-settings: 'FILL' 1;">neurology</span>
+                        Synthesis
+                    </h2>
+                    <div
+                        class="bg-white dark:bg-surface-container-high rounded-xl p-8 md:p-12 shadow-md dark:shadow-[0_30px_60px_rgba(0,0,0,0.5)] outline outline-1 outline-gray-200 dark:outline-outline-variant/10 transition-colors duration-300">
+                        <div id="answer"
+                            class="prose prose-lg dark:prose-invert max-w-none text-[#1d1d1f]/90 dark:text-on-surface/90 font-body leading-loose tracking-normal transition-colors duration-300">
+                            <p class="text-gray-400 dark:text-on-surface-variant/50 italic">Your analysis will appear here after querying the document...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <h3
+                        class="text-sm font-bold tracking-[0.2em] text-gray-500 dark:text-on-surface-variant uppercase flex items-center gap-3 transition-colors duration-300">
+                        <span
+                            class="material-symbols-outlined text-gray-500 dark:text-on-surface-variant transition-colors duration-300">library_books</span>
+                        Retrieved Chunks
+                    </h3>
+                    <div id="sources" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        let isFileUploaded = false;
+
+        async function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const uploadState = document.getElementById("uploadState");
+            const fileNameDisplay = document.getElementById("uploadedFileNameDisplay");
+            
+            uploadState.style.display = "flex";
+            fileNameDisplay.innerText = "Uploading...";
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const res = await fetch("http://127.0.0.1:8000/upload", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    fileNameDisplay.innerText = file.name;
+                    isFileUploaded = true;
+                } else {
+                    fileNameDisplay.innerText = "Upload failed!";
+                    isFileUploaded = false;
+                }
+            } catch (err) {
+                fileNameDisplay.innerText = "Connection error";
+                isFileUploaded = false;
+                console.error(err);
+            }
+        }
+
+        function clearUpload() {
+            document.getElementById("fileInput").value = "";
+            document.getElementById("uploadState").style.display = "none";
+            isFileUploaded = false;
+        }
+
+        // New function to handle Enter and Shift+Enter
+        function handleKeyPress(event) {
+            // Check if Enter is pressed without the Shift key
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevents adding a new line
+                askQuestion();
+            }
+        }
+
+        async function askQuestion() {
+            if (!isFileUploaded) {
+                alert("Please upload a document first.");
+                return;
+            }
+
+            const queryInput = document.getElementById("queryInput");
+            const query = queryInput.value;
+            
+            if (!query.trim()) {
+                alert("Enter a question");
+                return;
+            }
+
+            const answerDiv = document.getElementById("answer");
+            const sourcesDiv = document.getElementById("sources");
+
+            // Show Thinking State
+            answerDiv.innerHTML = "<p class='animate-pulse'>Thinking...</p>";
+            sourcesDiv.innerHTML = "";
+
+            // Smooth scroll down to the results container immediately
+            document.getElementById("results-container").scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            try {
+                const res = await fetch("http://127.0.0.1:8000/query", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                const data = await res.json();
+
+                // Render Answer
+                answerDiv.innerHTML = `<p>${data.answer}</p>`;
+
+                // Render Sources
+                data.sources.forEach(src => {
+                    const card = `
+                    <div class="bg-white dark:bg-surface-container-lowest rounded-lg p-6 flex flex-col gap-4 border-l-2 border-[#0071e3] shadow-sm hover:shadow-md dark:shadow-none group hover:bg-gray-50 dark:hover:bg-surface-container-low transition-all duration-300">
+                        <div class="flex items-center justify-between text-xs text-gray-500 dark:text-on-surface-variant font-medium tracking-wider transition-colors duration-300">
+                            <span class="bg-blue-100 text-blue-800 dark:bg-secondary-container dark:text-on-secondary-container px-2 py-1 rounded-sm transition-colors duration-300">Page ${src.page}</span>
+                        </div>
+                        <p class="text-sm text-[#1d1d1f] dark:text-on-surface leading-relaxed font-body transition-colors duration-300">${src.text}</p>
+                    </div>`;
+                    sourcesDiv.innerHTML += card;
+                });
+                
+            } catch (err) {
+                answerDiv.innerHTML = "<p class='text-red-500 dark:text-error'>Error reaching backend. Is the server running?</p>";
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>

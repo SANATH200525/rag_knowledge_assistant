@@ -1,125 +1,227 @@
-# RAG Knowledge Assistant
+# ReaDoc — AI-Powered Document Intelligence (RAG System)
 
-A Retrieval-Augmented Generation (RAG) backend built with FastAPI that allows semantic search over uploaded PDF documents.
+ReaDoc is a full-stack **Retrieval-Augmented Generation (RAG)** application that allows users to upload documents (PDFs) and ask questions about them. The system retrieves relevant context using vector search and generates accurate answers using an LLM.
 
-The system processes documents, converts them into embeddings, and stores them in a FAISS vector index for efficient similarity search.
+---
 
-## Architecture
+##  Live Features
 
-PDF Upload
-→ Text Extraction
-→ Chunking
-→ Embedding Generation
-→ FAISS Vector Index
-→ Semantic Retrieval
+* 📄 Upload PDF documents
+* 🔍 Semantic search using vector embeddings
+* 🤖 AI-generated answers using Groq LLM
+* 📚 Source-backed responses (page + text chunks)
+* 🌐 Clean responsive frontend (desktop + mobile)
+* ⚡ FastAPI backend with async endpoints
 
-## Tech Stack
+---
 
-Backend
+##  Architecture
+
+```text
+User Query
+   ↓
+Embedding Model (Sentence Transformers)
+   ↓
+FAISS Vector Search
+   ↓
+Top-K Relevant Chunks
+   ↓
+LLM (Groq)
+   ↓
+Final Answer + Sources
+```
+
+---
+
+##  Tech Stack
+
+### Backend
 
 * FastAPI
+* FAISS (Vector Database)
+* Sentence Transformers (`all-MiniLM-L6-v2`)
+* PyMuPDF (PDF parsing)
+* Groq API (LLM inference)
 
-Document Processing
+### Frontend
 
-* PyMuPDF
+* HTML + Tailwind CSS
+* Vanilla JavaScript (Fetch API)
 
-Embeddings
+---
 
-* Sentence Transformers (all-MiniLM-L6-v2)
+##  Project Structure
 
-Vector Database
-
-* FAISS
-
-## Project Structure
-
-rag_knowledge_assistant/
-
-main.py
-rag/
- pdf_loader.py
- chunker.py
- embedder.py
-
-vector_store/
- faiss_store.py
-
-uploads/
-
-## Features Implemented
-
-* PDF upload API
-* Text extraction from PDFs
-* Document chunking
-* Embedding generation
-* Vector indexing using FAISS
-
-## Installation
-
-Clone the repository
-
-```
-git clone <repo_url>
-cd rag_knowledge_assistant
+```text
+rag_project/
+│
+├── main.py                  # FastAPI app
+├── requirements.txt
+├── .env                     # API keys (not committed)
+│
+├── rag/
+│   ├── pdf_loader.py        # PDF text extraction
+│   ├── chunker.py           # Text chunking
+│   ├── embedder.py          # Embedding generation
+│   ├── generator.py         # Groq LLM integration
+│
+├── vector_store/
+│   ├── faiss_store.py       # FAISS indexing + search
+│
+├── frontend/
+│   ├── index.html           # Main UI (responsive)
+│   ├── mobile.html          # (optional / legacy)
+│
+└── data/
+    ├── uploads/             # Uploaded files
 ```
 
-Create virtual environment
+---
 
+##  Setup Instructions
+
+### 1. Clone Repo
+
+```bash
+git clone https://github.com/your-username/readoc.git
+cd readoc
 ```
+
+---
+
+### 2. Create Virtual Environment
+
+```bash
 python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
 ```
 
-Activate virtual environment
+---
 
-Windows
+### 3. Install Dependencies
 
-```
-venv\Scripts\activate
-```
-
-Install dependencies
-
-```
+```bash
 pip install -r requirements.txt
 ```
 
-## Run the Server
+---
 
+### 4. Add Environment Variables
+
+Create `.env` file:
+
+```env
+GROQ_API_KEY=your_api_key_here
 ```
+
+---
+
+### 5. Run Server
+
+```bash
 uvicorn main:app --reload
 ```
 
-Open API docs
+---
 
-```
-http://127.0.0.1:8000/docs
+### 6. Open App
+
+```text
+http://127.0.0.1:8000
 ```
 
-## API Endpoints
+---
+
+##  API Endpoints
 
 ### Upload Document
 
+```http
 POST /upload
-
-Uploads and indexes a PDF document.
-
-Response example
-
 ```
+
+**Body:** FormData
+
+* `file`: PDF file
+
+---
+
+### Query Document
+
+```http
+POST /query
+```
+
+**Body:**
+
+```json
 {
- "message": "Document indexed successfully",
- "document_id": "...",
- "pages": 3,
- "chunks": 8,
- "vector_count": 8
+  "query": "What is machine learning?"
 }
 ```
 
-## Next Steps
+**Response:**
 
-* Semantic retrieval endpoint
-* LLM integration
-* Source citation
-* FAISS persistence
-* Frontend interface
-* Deployment
+```json
+{
+  "query": "...",
+  "answer": "...",
+  "sources": [
+    { "page": 2, "text": "..." }
+  ]
+}
+```
+
+---
+
+## Example Workflow
+
+1. Upload a PDF
+2. Ask a question
+3. System retrieves relevant chunks
+4. LLM generates answer
+5. Sources are displayed
+
+---
+
+##  Security Notes
+
+* CORS restricted to frontend origin (no wildcard access)
+* API keys stored in `.env`
+* File uploads handled safely via FastAPI
+
+---
+
+##  Deployment
+
+### Recommended Platforms:
+
+* Render (free tier, auto-sleep)
+* Railway (faster, usage-based)
+
+---
+
+##  Future Improvements
+
+* DOCX support
+* Streaming responses
+* Chat history
+* Better chunk ranking
+* Authentication system
+
+---
+
+##  Author
+
+Built as a full-stack AI project demonstrating:
+
+* RAG pipeline design
+* Vector search (FAISS)
+* LLM integration (Groq)
+* API + frontend integration
+
+---
+
+##  License
+
+MIT License
