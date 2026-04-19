@@ -33,31 +33,60 @@ app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 def serve_home():
     return FileResponse("frontend/index.html")
 
+@app.get("/health")
+def check_health():
+    return {"status":"ok"}
+
+
+from fastapi import FastAPI, UploadFile, File, Request, HTTPException, status
+import uuid
+import shutil
+import os
+
+# Set limit to 10 MB (in bytes)
+MAX_FILE_SIZE = 10 * 1024 * 1024  
 
 @app.post("/upload")
-async def upload_pdf(file: UploadFile = File(...)):
+async def upload_pdf(request: Request, file: UploadFile = File(...)):
+    # 1. File Size Validation
+    content_length = request.headers.get('content-length')
+    if content_length and int(content_length) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, 
+            detail=f"File too large. Maximum size is {MAX_FILE_SIZE / (1024 * 1024)} MB."
+        )
 
+    # 2. Ensure uploads directory exists
+    os.makedirs("uploads", exist_ok=True)
+
+    # 3. Save the uploaded file
     unique_id = uuid.uuid4()
     file_path = f"uploads/{unique_id}_{file.filename}"
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    pages = extract_text_by_page(file_path)
+    # 4. Process the document
+    try:
+        pages = extract_text_by_page(file_path)
+        chunks = chunk_text(pages)
+        chunks = embed_chunks(chunks)
+        add_chunks_to_index(chunks)
+        
+    except Exception as e:
+        # If parsing or embedding crashes (like an Out of Memory error), 
+        # delete the file so it doesn't waste limited server storage.
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        raise HTTPException(status_code=500, detail=f"Error processing document: {str(e)}")
 
-    chunks = chunk_text(pages)
-
-    chunks = embed_chunks(chunks)
-    #chunks = embed_chunks(chunks)
-
-    add_chunks_to_index(chunks)
-
+    # 5. Return Success
     return {
-    "message": "Document indexed successfully",
-    "document_id": str(unique_id),
-    "pages": len(pages),
-    "chunks": len(chunks),
-    "vector_count": index.ntotal
+        "message": "Document indexed successfully",
+        "document_id": str(unique_id),
+        "pages": len(pages),
+        "chunks": len(chunks),
+        "vector_count": index.ntotal
     }
     
     
