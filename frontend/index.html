@@ -226,7 +226,7 @@
             formData.append("file", file);
 
             try {
-                const res = await fetch("http://127.0.0.1:8000/upload", {
+                const res = await fetch("https://readoc-b44e.onrender.com/upload", {
                     method: "POST",
                     body: formData
                 });
@@ -285,7 +285,7 @@
             document.getElementById("results-container").scrollIntoView({ behavior: 'smooth', block: 'start' });
 
             try {
-                const res = await fetch("http://127.0.0.1:8000/query", {
+                const res = await fetch("https://readoc-b44e.onrender.com/query", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
